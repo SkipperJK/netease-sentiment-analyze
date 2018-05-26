@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Functions Test</title>
+<script src="{{url_for('static', filename='jquery.js')}}"></script>
+<script type=text/javascript>
+var $SCRIPT_ROOT = {{request.script_root|tojson|safe}};
+</script>
+<script type=text/javascript>
+$(function() {
+    function tokenize(e){
+        $.getJSON($SCRIPT_ROOT + '/tokenize', {
+            content: $('[name = "content"').val()
+        },
+        function(data) {
+            $('#art_tokens').text(data.tokens_string);
+            $('#pos_tag').text(data.pos_tag);
+            $('#pos_clean').text(data.pos_string);
+        });
+    };
+    $('#tokenize').bind('click', tokenize);
+
+    function accuracy(e){
+        $.getJSON($SCRIPT_ROOT + '/accuracy', {
+            file_path: $('[name = "file_path"').val()
+        },
+        function(data) {
+            $('#report').text(data.report)
+        });
+    };
+    $('#accuracy').bind('click', accuracy);
+
+    function sentiment(e){
+        $.getJSON($SCRIPT_ROOT + '/sentiment', {
+            file_path: $('[name = "file_path"').val(),
+            comments: $('[name = "comments"').val()
+        },
+        function(data) {
+            $('#label').text(data.label)
+        });
+    };
+    $('#sentiment').bind('click', sentiment);
+
+});
+</script>
+</head>
+<body style="background-color: #EEEEEE;font-size:20px">
+<div style="padding-right: 20%;padding-left: 20%;padding-top: 50px">
+
+    <p>Article Content: </p>
+    <textarea type="text" name="content" style="width: 100%;height: 100px"></textarea>
+    <p><input type="button" id="tokenize" value="Excute"></p>
+    <p>Article tokens: <span id ="art_tokens" style="color:#436EEE"></span></p>
+    <p>POS Tag: <span id = "pos_tag" style="color:#436EEE"></span></p>
+    <p>Clean: <span id = "pos_clean" style="color:#436EEE"></span></p>
+    
+    <p>Train Corpus path:</p>
+    <textarea type="text" name="file_path" style="width: 100%;height: 20px">/home/skipper/study/python/project_v2/cmt_stit.txt</textarea><br>
+    <p><input type="button" id="accuracy" value="Query Accuracy"></p>
+    <p>Accuracy: <div id = "report" style="white-space: pre;color:#436eee"></div></p>
+
+    <p>Comments: </p>
+    <textarea type="text" name="comments" style="width: 100%;height: 150px"></textarea><br>
+    <input type="button" id="sentiment" value="Judge">
+    
+    <p>Label: <span id = "label" style="color:#436EEE"></span></p>
+</div>
+            
+
+<p><span id = "filename"></span></p>
+</body>
+</ht

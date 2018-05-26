@@ -1,0 +1,7 @@
+Test Accuracy of VSM: 0.63
+             precision    recall  f1-score   support
+
+        neg       0.61      0.42      0.50     12588
+        pos       0.64      0.79      0.70     16097
+
+avg / total       0.62      0.63      0.61     28685

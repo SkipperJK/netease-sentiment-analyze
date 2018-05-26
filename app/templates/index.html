@@ -1,0 +1,33 @@
+<html>
+	<head>
+		{% if title %}
+		<title>{{title}} - Template Test</title>
+		{% else %}
+		<title>Use control sentence</title>
+		{% endif %}
+	</head>
+	<body>
+		<h1>Hello, {{user.nickname}}!</h1>
+		<p>For Template test.</p>
+		{% if title %}
+		<p> Test the control sentence in index.html</p>
+		{% endif %}
+		
+		<!-- <input type="text" name = "Start Date:" />
+		<input type="text" name = "End Date:" />
+		<input type="submit" value = "Analyse" />
+		<a href="view/path"><input type="button" name="button" value="Analyse"></a> -->
+
+		<form action="/getdate" method="post">
+		    <div>
+		        <!-- <label>data <font style="color:#a94442" size="2">
+		        <input id="data" name="data"> -->
+		        Start date: <input type="text" name = "date_start" />
+				End date: <input type="text" name = "date_end" />
+		    </div>
+		    <div>
+		        <button  type="submit">Submit</button>
+		    </div>
+		</form>
+	</body>
+</html>
