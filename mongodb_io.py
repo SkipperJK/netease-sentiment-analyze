@@ -1,4 +1,5 @@
 #coding=utf-8
+import os
 import sys
 import json
 import jieba
@@ -12,7 +13,7 @@ from pymongo import MongoClient
 if sys.getdefaultencoding() != 'utf-8':
 	reload(sys)
 	sys.setdefaultencoding('utf-8')
-
+cwd = os.getcwd()
 
 def judge_art_cnt(date_start, date_end):
 	try:
@@ -20,11 +21,8 @@ def judge_art_cnt(date_start, date_end):
 		db = conn.netease
 
 		a = db.war.find({'$and':[{'date':{'$gt':date_start}}, {'date':{'$lt':date_end}}]})
-		# for i in a:
-		# 	print i['date']
 		cnt = a.count()
 		conn.close()
-		# cnt = db.war.find({'$and':[{'date':{'$gt':date_start}, 'date':{'$lt': date_end}}]}).count()
 		print "%s, %s, %d --from mongodb_io"%(date_start, date_end, cnt)
 		return cnt
 	except Exception as e:
@@ -216,14 +214,11 @@ def tokens_to_file(key, path):
 
 def titile_tokens():
 	cnt = 0		
-	# new = []
-	# point = datetime(2018, 1, 1)
 	try:
-		sw_path = "/home/skipper/study/python/project/text/news_stopwords.txt"
+		sw_path = os.path.join(cwd, "text/news_stopwords.txt")
 		sw_list = prep.get_stopwords(sw_path)
 		conn = MongoClient("127.0.0.1", 27017)
 		db = conn.netease
-		# target = db.war.find({'date':{'$gt':point}})
 		target = db.token_war.find({})
 
 		for i in target:
@@ -237,17 +232,11 @@ def titile_tokens():
 				tokens_string = ' '.join(prep.tokenize(title_keywords, sw_list = sw_list, language = 'CN'))
 				db.token_war.update_one({'number': i['number']}, {'$set':{'title_keywords': tokens_string}})
 		print "%d title tokenize completed!"%cnt
-		# if new:
-		# 	# insert bulk
-		# 	db.token_war.insert_many(new)						
-		# 	print "%d article tokenized completed!"%cnt
-		# 	return "%d article tokenized completed!"%cnt
-		# else:
-		# 	print "No new article requires tokenize!"
-		# 	return "No new article requires tokenize!"
+	
 		conn.close()
 	except Exception as e:
 		print "From:art_tokenize:\t\nUnexpect Error: {}".format(e)
+
 
 def title_clean_tokens():
 	cnt = 0
@@ -256,8 +245,6 @@ def title_clean_tokens():
 		conn = MongoClient("127.0.0.1", 27017)
 		db = conn.netease
 		target = db.token_war.find()
-		# if update_all == 1:
-		# 	print "Updating pos remove of all article again!"
 		for i in target:
 			if "im_title" not in i.keys() or not i['im_title']:
 				t = []
@@ -275,16 +262,7 @@ def title_clean_tokens():
 				db.token_war.update_one({'number': i['number']}, {'$set':{'im_title': string}})
 				cnt += 1
 		print "%d title tokens clean completed!"%cnt
-		# if cnt == 0:
-		# 	print "There are no article that need to pos clean!"
-		# 	return "There are no article that need to pos clean!"
-		# else:
-		# 	if(update_all == 0):
-		# 		print "%d article have pos clean!"%cnt
-		# 		return "%d article have pos clean!"%cnt
-		# 	else:
-		# 		print "%d article have update pos clean!"%cnt
-		# 		return "%d article have update pos clean!"%cnt
+	
 		conn.close()
 	except Exception as e:
 		print "From:pos_clean_tokens:\n\tUnexpect Error: {}".format(e)
@@ -292,16 +270,13 @@ def title_clean_tokens():
 
 def main():
 	crawl_state = crawl.main()
-	sp = "/home/skipper/study/python/project/text/news_stopwords.txt"
+	sp = os.path.join(cwd, "text/news_stopwords.txt")
 	sw_list = prep.get_stopwords(sp)
 	a = art_tokenize()
 	b = rm_sp_tokens(sw_list)
 	c = pos_clean_tokens()
 	titile_tokens()
 	title_clean_tokens()
-	# globa update
-	# rm_sp_tokens(sw_list, 1)	
-	# pos_clean_tokens(1)
 	crawl_state = crawl_state +'\n'+a+'\n'+b+'\n'+c
 	print "From the mongodb_io.py:"
 	print crawl_state

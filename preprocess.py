@@ -1,4 +1,5 @@
 #coding=utf-8
+import os
 import sys
 import json
 import jieba
@@ -10,9 +11,9 @@ if sys.getdefaultencoding() != 'utf-8':
 	reload(sys)
 	sys.setdefaultencoding('utf-8')
 
-
 # Loading the default stopwords
-filename = "/home/skipper/nltk_data/Other_data/stopwords/stopsign.txt"
+cwd = os.getcwd()
+filename = os.path.join(cwd, "text/stopsign.txt")
 try:
 	with open(filename) as fp:
 		stopwords = fp.read().splitlines()
@@ -120,21 +121,11 @@ def pos_test(tokens):
 	except Exception as e:
 		print "From:pos_test:\n\tUnexpect Error: {}".format(e)
 
-# def get_tokens_string(docs, sw_path = sw_path, language = "CN"): 
-# 	doc = []
-# 	# doc_id = []
-# 	try:
-# 		sw_list = get_stopwrods(sw_path)
-# 		for ele in docs:
-# 			tokens = tokenize(ele, sw_list = sw_list, language = language)
-# 			doc.append(' '.join(tokens))
-# 		return doc
-# 	except Exception as e:
-# 		print "From:get_tokens_string:\n\tUnexpected Error: {}".format(e)
+
 
 if __name__ == '__main__':
 	sentence = "MDS是一个统计技术集合,用于可视化地描述距离集合中的相似性和差异性.对于经典的MDS的处理过程包括:输入一个包含数据集中任意两个数据点之间距离的距离矩阵"
-	sw_list = get_stopwords("/home/skipper/study/python/project/text/news_stopwords.txt")
+	sw_list = get_stopwords(os.path.join(cwd, "text/news_stopwords.txt"))
 	tokens = tokenize(sentence, sw_list, language = "CN")
 	for i in tokens:
 		print i

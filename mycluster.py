@@ -13,7 +13,7 @@ from gensim import corpora, models
 if sys.getdefaultencoding() != 'utf-8':
 	reload(sys)
 	sys.setdefaultencoding('utf-8')
-sw_path = "/home/skipper/nltk_data/Other_data/stopwords/CNstopwords.txt"
+
 
 
 def union_dict(*dicts):
@@ -159,12 +159,3 @@ def all_output(n_clusters, classes_keywords, clusters_topic_dict, \
 
 	except Exception as e:
 		print "From:all_output:\n\tUnexpect Error: {}".format(e)
-
-
-def main():
-	stopwords_path = "/home/skipper/nltk_data/Other_data/stopwords/CNstopwords.txt"
-	stopwords = get_stopwrods(stopwords_path)
-
-
-if __name__ == '__main__':
-	main()

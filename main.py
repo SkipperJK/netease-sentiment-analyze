@@ -15,6 +15,7 @@ from datetime import datetime
 if sys.getdefaultencoding() != 'utf-8':
 	reload(sys)
 	sys.setdefaultencoding('utf-8')
+cwd = os.getcwd()
 
 
 def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 0, show = 0):
@@ -22,21 +23,8 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 		import myvisual as visual
 	else:
 		import myvisual_show as visual
-	sw_path = "/home/skipper/study/python/project/text/news_stopwords.txt"
+	sw_path = os.path.join(cwd, "text/news_stopwords.txt")
 	sw_list = prep.get_stopwords(sw_path)
-
-	# new_insert = crawl.crawl_new(5)
-	# state = mgio.sync()
-	# print state
-	# if new_insert > 0 or state == 0: 
-	# 	mgio.art_tokenize()
-	# 	mgio.rm_sp_tokens(sw_list)
-	# 	mgio.pos_clean_tokens()
-
-	# date_start = datetime(2018, 5, 3)
-	# date_end = datetime(2018, 5, 6)
-	# date_start = '2018/5/1'
-	# date_end = '2018/5/6'
 
 	if date_start and date_end:
 		s_eles = date_start.split('/')
@@ -56,10 +44,8 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 		c_t = time.localtime(time.time())
 		tag_time = crawl.get_point_time(days)		#  0 present today 0:0   -1 present tommorow
 		b = str(tag_time).split()[0].split('-')
-		# print b
 		b = [int(i) for i in b]
 		b = [str(i) for i in b]
-		# print b
 		if n_clusters == 0:
 			base_path = '_'.join(b)+'-'+'_'.join([str(c_t[0]), str(c_t[1]), str(c_t[2])])+'-orign'
 		else:
@@ -68,7 +54,7 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 	flask_path = '/static/img/'+base_path
 	print flask_path
 
-	if os.path.exists('/home/skipper/study/python/project_v2/app'+flask_path) and show == 0:
+	if os.path.exists(os.path.join(cwd, 'app')+flask_path) and show == 0:
 		p_list = ['mds.jpg', 'pca.jpg', 'bar.jpg', 'pie.jpg']
 		p_list = [flask_path+'/'+i for i in p_list]
 		p_list.append(base_path)
@@ -76,7 +62,7 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 		print p_list
 		return p_list
 	else:
-		path = '/home/skipper/study/python/project_v2/app'+flask_path
+		path = os.path.join(cwd, 'app')+flask_path
 		if saving == 1:
 			os.mkdir(path)
 
@@ -89,46 +75,16 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 		data = prep.convert_to_dataframe(target)
 		cnt = len(data)
 		doc_id = list(data.id)
-# -------------------------------------------------------------------
+
 		print "The number of article: %d"%cnt
 		print "Detail as follows:"
 		df = pd.DataFrame(data, columns = ['id','date', 'title', 'url'])
 		print df
-# -------------------------------------------------------------------
 
-	# Whether using title or content, it is diffcult to find a optimal cluster k value.
-
-	# One Method-----:
-	# Using the title clustering		
-	# The words is few, and the result of clustering is not optimal 
-		# tokens_string = []
-		# for i in range(cnt):
-		# 	title_keywords = []
-		# 	if len(data.keywords[i]) > 1:	# article have keywords
-		# 		title_keywords = data.title[i] + '\t\t'+' '.join(data.keywords[i])
-		# 	else:
-		# 		title_keywords = data.title[i]
-		# 	tokens_string.append(' '.join(prep.tokenize(title_keywords, sw_list = sw_list, language = 'CN')))
-		# for ele in tokens_string:
-		# 	print ele
-	# Another Method----:
-	# Using the article content clustering  # A lot of words
 		tokens_string = list(data.im_tokens)
-		# for ele in tokens_string:
-		# 	print ele
-
-# -------------------------------------------------------------------
 		d = {'id': data['id'], 'date':data['date'], 'keywords': tokens_string}
 		df = pd.DataFrame(d)
 		print df
-# -------------------------------------------------------------------
-
-	# 	tokens_string = list(data.rs_tokens)
-	# # Using the pyLDAvis showing the result
-	# 	# Convert tokens_string to tokens_list(gensim)
-	# 	tokens = [ele.split() for ele in tokens_string]
-	# 	lda, corpus_BOW, dictionary = topic.get_ldavis_data(tokens, 5)	
-	# 	visual.show_lda(lda, corpus_BOW, dictionary)
 
 
 		if cnt > 0:
@@ -137,24 +93,9 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 			print "The length of dictionary: %d"%len(dictionary)
 			print "Creating TF-IDF TDM......"
 			tfidf_matrix = mycluster.get_tfidf_matrix(tf_matrix)
-
-			# print len(tfidf_matrix)
-			# print len(tfidf_matrix[0])
-			# print tfidf_matrix[0]
-
-	# Searching the k vaule, but the two method not effect as follows:
-			# for m_value in range(5, 30):
-			# 	visual.predict_k(tf_matrix, m_value)
-			# k = visual.predict_k(tfidf_matrix, 30)
-			# print k
-			# visual.prediect_k_sc(tfidf_matrix, 30)
-
-
 			print "Creating the words and weight of every doc......"
 			docs_keywords_string, docs_words_weight = mycluster.get_first_n_words(tfidf_matrix, 10, dictionary)
 
-
-# -------------------------------------------------------------------
 			k_w = {}
 			for i,ele in enumerate(docs_words_weight):
 			    keys = ele.keys()
@@ -164,22 +105,17 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 
 			df = pd.DataFrame(k_w)
 			print df
-# -------------------------------------------------------------------
 
-	# Setting the k value
-			# n_clusters = 10	
+
 			if n_clusters == 0:
 				n_clusters = int(sqrt(cnt/2))
-			# n_clusters = 2
+
 			print "The n_clusters is: %d"%n_clusters
 			print "Clustering......"
 			labels = mycluster.get_label_list(n_clusters, tfidf_matrix)
-			# labels = mycluster.get_label_list(n_clusters, tf_matrix)
 			data['cluster'] = labels
 			index_list = list(data['cluster'].value_counts().index)
-			# print index_list
 
-# -------------------------------------------------------------------
 			hot_sort = data['cluster'].value_counts()
 			df = pd.DataFrame.from_dict({'Cluster Label': hot_sort.index, 'Article Count': hot_sort.values})
 			df = pd.DataFrame(df, columns = ['Cluster Label', 'Article Count'])
@@ -193,28 +129,16 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 			                                'url': list(pd.DataFrame(data.loc[data['cluster'] == i])['url'])})
 			    df = pd.DataFrame(df, columns = ['id', 'title', 'url'])
 			    print df
-# -------------------------------------------------------------------
 
-	# Get cluster topic
 			clusters_topic_dict = {}
 			clusters_art_number = {}
-			
-			# clusters_art_content = mycluster.get_clusters_detail(n_clusters, data, 'im_tokens') 
-			# clusters_title_keywords = mycluster.get_clusters_detail(n_clusters, data, 'title_keywords')
 			clusters_title_keywords = mycluster.get_clusters_detail(n_clusters, data, 'im_title') 
-			# for i, art_list in enumerate(clusters_art_content):
 			for i, art_list in enumerate(clusters_title_keywords):
 				texts = [ele.split() for ele in art_list]
 				t = topic.get_topic_string(texts)			# get topic according im_tokens through lda model
 				clusters_topic_dict[index_list[i]] = t
 				clusters_art_number[index_list[i]] = len(art_list)
 
-			# for k,v in clusters_topic_dict.items():
-			# 	print k, v
-			# for k,v in clusters_art_number.items():
-			# 	print k, v
-
-# -------------------------------------------------------------------
 			topic_list = []
 			art_number_list = []
 			c_classes_keywords_sort = []
@@ -226,32 +150,20 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 			                            'Topic Based on Title': topic_list})
 			df = pd.DataFrame(df, columns = ['Cluster Label', 'Article Count', 'Topic Based on Title'])
 			print df
-# -------------------------------------------------------------------
-
-
-
 
 			visual.mds_show(tfidf_matrix, clusters_topic_dict, n_clusters, data, path, saving)
 			visual.pca_show(tfidf_matrix, clusters_topic_dict, n_clusters, data, path, saving)
-			# visual.pca_show_scatter(tfidf_matrix, clusters_topic_dict, n_clusters, data)
-			# visual.cluster_barh(n_clusters, index_list, clusters_topic_dict, clusters_art_number)
-
-	# Get cluster comments
 			clusters_cmt_number = {}
 			clusters_cmt_detail = []
 			clusters_id_list = mycluster.get_clusters_detail(n_clusters, data, 'id')
 			for i, cluster_id_list in enumerate(clusters_id_list):
 				cmt_detail = mgio.id_get_cmts(cluster_id_list)			# return DataFrame format
 				clusters_cmt_detail.append(cmt_detail)
-				# print len(cmt_detail)
 				clusters_cmt_number[index_list[i]] = len(cmt_detail) 
 
-			# for k,v in clusters_cmt_number.items():
-			# 	print k, v
 			visual.cluster_barh_new(n_clusters, index_list, clusters_topic_dict,\
 										 clusters_art_number, clusters_cmt_number, path, saving)
 
-# -------------------------------------------------------------------
 			cmt_number_list = []
 			for idx in index_list:
 			    cmt_number_list.append(clusters_cmt_number[idx])
@@ -259,12 +171,11 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 			df = pd.DataFrame.from_dict({'Cluster Label': hot_sort.index, 'Comment Count': cmt_number_list})
 			df = pd.DataFrame(df, columns = ['Cluster Label', 'Comment Count'])
 			print df
-# -------------------------------------------------------------------
 
-
-	# Get cluster commnet sentiment propation
-			file_path = '/home/skipper/study/python/project_v2/cmt_stit.txt'
-			stopwords_path = "/home/skipper/nltk_data/Other_data/stopwords/stopsign.txt"
+			file_path = os.path.join(cwd, 'cmt_stit.txt')
+			# file_path = '/home/skipper/study/python/project_v2/cmt_stit.txt'
+			stopwords_path = os.path.join(cwd, "text/stopsign.txt")
+			# stopwords_path = "/home/skipper/nltk_data/Other_data/stopwords/stopsign.txt"
 
 			d_stit_prop_dict = {}
 			s_stit_prop_dict = {}
@@ -280,20 +191,11 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 				d_stit_prop_dict[index_list[i]] = sentiment.get_stit_prop(svm_label)
 				s_stit_prop_dict[index_list[i]] = sentiment.get_stit_prop(snow_label)
 
-			# print pd.DataFrame(cmt_detail, columns = ['d_label', 's_label', 'vote', 'against', 'content'])
-
-			# for k,v in d_stit_prop_dict.items():
-			# 	print k, v
-			# for k,v in s_stit_prop_dict.items():
-			# 	print k, v
-
-# -------------------------------------------------------------------
 			for i, cmt_detail in enumerate(clusters_cmt_detail):
 			    print "# The Cluster label: %d"%index_list[i]
 			    print "# The count of article: %d"%cmt_number_list[i]
 			    df = pd.DataFrame(cmt_detail, columns = ['vote', 'against', 'd_label', 'content'])
 			    print df
-# -------------------------------------------------------------------
 
 
 			visual.cluster_stit_pie(n_clusters, index_list, d_stit_prop_dict, clusters_topic_dict, path, saving)
@@ -315,17 +217,8 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 
 	
 if __name__ == '__main__':
-	# new_insert = crawl.crawl_new(1)
-	# if new_insert > 0:
-	# 	mgio.art_tokenize()
-	# mgio.art_tokenize()
+
 	date_start = '2018/4/25'
 	date_end = '2018/4/26'
 	main(date_start = date_start, date_end = date_end, show = 1)
-	# main(date_start = date_start, date_end = date_end, n_clusters = 5, show = 1)
-	# main(days = 2, show = 1)
-	# main(days = 2, n_clusters = 3, show = 1)
-	# main(days = 1, show = 1, saving = 1)
-	# main(days = 1, n_clusters = 3, show = 1, saving = 1)
-	# main(days = 3, show = 1)
 	pass

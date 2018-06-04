@@ -245,7 +245,6 @@ def predict_k(tfidf_matrix, max_value):
 	plt.ylabel('SSE')
 	plt.plot(X, SSE, 'o-')
 	plt.show()
-	# plt.savefig('/home/skipper/study/python/project/kmeans/tfidf/Max_%d.jpg'%max_value)
 
 	min_dis = -1
 	k = -1
@@ -276,15 +275,13 @@ def get_colors_list(n_clusters):
 	use_colors = []
 	while len(use_colors) != n_clusters:
 		use_colors.append(colors_list[random.randint(0, len(colors_list)-1)])
-	print use_colors
+	# print use_colors
 	return use_colors
 
 
 def get_marker_list(n_clusters):
 	m = markers.MarkerStyle()
 	markers_list = list(m.filled_markers)
-	# print markers_list
-	# print len(markers_list)
 	use_markers = []
 	while len(use_markers) != n_clusters:
 		use_markers.append(markers_list[random.randint(0, len(markers_list)-1)])
@@ -293,16 +290,8 @@ def get_marker_list(n_clusters):
 
 
 def show_lda(lda, corpus, dictionary, number = 001):
-	# corpus, dictionary = get_corpus_dictionary()
- 	# lda = LdaModel(corpus=corpus,num_topics=2)
     data = pyLDAvis.gensim.prepare(lda, corpus, dictionary)
     pyLDAvis.show(data,open_browser=True)
-    # pyLDAvis.show(data,open_browser=False)
-    # pyLDAvis.save_html(data, '/home/skipper/study/python/project/visual/lda_%d.html'%number) 
 
 if __name__ == '__main__':
-	# pass
-	# label_scatter(4)
-	# get_marker_list(4)
 	pass
-	# cluster_stit_pie(1, 1, 1)

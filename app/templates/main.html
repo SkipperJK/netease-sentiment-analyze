@@ -61,34 +61,15 @@ $(function() {
             n_clusters: $('input[name = "n_clusters"').val()
         },
         function(data) {
-            // filename = data.filename
-            // $('#filename').append('')
             var mds = data.mds +'?t=' + Math.random();
             var pca = data.pca +'?t=' + Math.random();
             var bar = data.bar +'?t=' + Math.random();
             var pie = data.pie +'?t=' + Math.random();
             var date_range = data.date_range;
-            // $('#filename').append('<img src= '+mds+' width="100" height="100" />');
-            // $('#filename').append('<img src= '+pca+' width="100" height="100" />');
-            // $('#filename').append('<img src= '+bar+' width="100" height="100" />');
-            // $('#filename').append('<img src= '+pie+' width="100" height="100" />');
-
-            // $('#filename').find('#img-group').remove();
-
-            // $('#filename').prepend('<div id="img-group"><h1 style="background-color:#7a7a7a;color:#fff;padding-left:40%;padding-right:30%"> '+ date_range +'</h1><img name="mds" width = "100%"/><img name="pca" width = "100%"/><img name="bar" width = "100%"/><img name="pie" width = "100%" /></div>')
-            
-            // var img_group = $('#filename').find('#img-group');
-            // img_group.find('[name=mds]').attr({"src":mds});
-            // img_group.find('[name=pca]').attr({"src":pca});
-            // img_group.find('[name=bar]').attr({"src":bar});
-            // img_group.find('[name=pie]').attr({"src":pie});
-
-
             $('#filename').prepend('<img src= '+pie+'  width = "100%"/>');
             $('#filename').prepend('<img src= '+bar+'  width = "100%"/>');
             $('#filename').prepend('<img src= '+pca+'  width = "100%"/>');
             $('#filename').prepend('<img src= '+mds+'  width = "100%"/>');
-           
             $('#filename').prepend('<h1 style="background-color:#7a7a7a;color:#fff;padding-left:30%;padding-right:30%"> '+ date_range +'</h1>')
         });
     };
@@ -117,8 +98,5 @@ $(function() {
 </div>
 
 <p><span id = "filename"></span></p>
-<!-- <img src="{{ url_for('static', filename='img/back1.jpg') }}" /> -->
-<!-- <img src="/static/img/back1.jpg" /> -->
-<!-- <p> <script type="text/javascript">document.write(filename)</script></p> -->
 </body>
 </html> 

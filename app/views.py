@@ -1,49 +1,30 @@
+import os
 import sys
-from app import app
-from flask import render_template, request, jsonify
-from datetime import datetime
-sys.path.append('/home/skipper/study/python/project_v2')
 import main as a
+from app import app
+import myclassifier
+import sentiment as stit
 import mongodb_io as mgio
 import judge_exist as j_e
 import preprocess as prep
-import sentiment as stit
-import myclassifier
-
+from datetime import datetime
+from flask import render_template, request, jsonify
+cwd = os.getcwd()
+sys.path.append(cwd)
 
 @app.route('/')		# set the trigger url, call the following function
 def f1():
 	# return "/ and excute the f1() function"
 	return render_template('main.html')
 
-
 @app.route('/test')
 def test():
 	return render_template('test.html')
-
-
+	
 @app.route('/crawl')
 def crawl():
 	crawl_state = mgio.main()
 	print "From view.py crawl: %s"%crawl_state
-	# crawl_state = '''
-	# Insert 0 article
-	# Update 67 article comments
-	# No new article requires tokenize!
-	# There are no article that need to be removed stop words!
-	# There are no article that need to pos clean!
-	# '''
-	# crawl_state = 'Insert 0 article\r\nUpdate 67 article comments\r\nNo new article requires tokenize!\
-	# \r\nThere are no article that need to be removed stop words!\r\nThere are no article that need to pos clean!'
-
-# 	crawl_state = '''
-#              precision    recall  f1-score   support
-
-#         neg       0.60      0.41      0.49     12588
-#         pos       0.63      0.79      0.70     16097
-
-# avg / total       0.62      0.62      0.61     28685
-# 	'''
 	return jsonify(crawl_state = crawl_state)
 
 
@@ -140,80 +121,12 @@ def sentiment():
 	string = ''
 	for i in svm_label:
 		string = string+'/'+i
-
 	return jsonify(label = string)
 
 
 @app.route('/accuracy')
 def accuracy():
-
 	file_path = request.args.get('file_path', None, type = str)
-
 	print "From view.py accuracy:%s"%file_path
 	report  = myclassifier.svm_classifier_accuracy(file_path)
-
 	return jsonify(report = report)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@app.route('/index')
-def f2():
-	# return "/index and excute f2() function"		
-
-	user = {'nickname': 'SKIPPER'}
-# You can add the html code to return value
-# 	return '''
-# <html>
-# 	<head>
-# 		<title>Home Page</title>
-# 	</head>
-# 	<body>
-# 		<h1>Hello, '''+ user['nickname']+'''</h1>
-# 	</body>
-# </html>'''
-
-# Using the template
-	return render_template("index.html", title = 'Home', user = user)
-
-
-# @app.route('/getdate', methods = ['GET', 'POST'])
-# @app.route('/getdate', methods = ['GET'])
-@app.route('/getdate', methods = ['POST'])
-def get_date():
-	if request.method == "POST":
-		date_start = request.form.get('date_start')
-		date_end = request.form.get('date_end')
-
-	print type(date_start)
-	print date_start
-
-	d_st, d_end = None, None
-	eles = date_start.split('/')
-	d_st = datetime(int(eles[0]), int(eles[1]), int(eles[2]))
-	eles = date_end.split('/')
-	d_end = datetime(int(eles[0]), int(eles[1]), int(eles[2]))
-	print d_st, d_end
-	cnt = mgio.judge_art_cnt(d_st, d_end)
-	print cnt
-	if cnt == 0:
-		return "<h1> No Article from %s to %s</h1>"%(date_start, date_end)
-	else:
-		return "The Article count: %d \n\t----from %s to %s</h1>"%(cnt, date_start, date_end)
-	# return date_start + date_end
-
-

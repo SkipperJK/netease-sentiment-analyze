@@ -3,6 +3,7 @@ import time
 import netease_4_10 as crawl
 from datetime import datetime
 
+cwd = os.getcwd()
 
 def is_exist(date_start = None, date_end = None, n_clusters = 0, days = 5):
 
@@ -33,8 +34,8 @@ def is_exist(date_start = None, date_end = None, n_clusters = 0, days = 5):
 			base_path = '_'.join(b)+'-'+'_'.join([str(c_t[0]), str(c_t[1]), str(c_t[2])])+'-Clusters_%s'%str(n_clusters)
 		print "The store path: %s"%base_path
 
-	path = '/home/skipper/study/python/project_v2/app/static/img/'+base_path
-	# print path
+	path = os.path.join(cwd, 'app/static/img/')+base_path
+	
 	if os.path.exists(path):
 		return "The analyse result have exists, you can directly load from the disk!"
 	else:
@@ -42,5 +43,5 @@ def is_exist(date_start = None, date_end = None, n_clusters = 0, days = 5):
 
 
 if __name__ == '__main__':
-	print is_exist('2018/5/1', '2018/5/6')
+	print is_exist('2018/4/25', '2018/4/30')
 	print is_exist()

@@ -13,6 +13,7 @@ from sklearn import svm 						# SVM classifier
 from sklearn.naive_bayes import MultinomialNB 	# NB classifier
 from sklearn.linear_model import SGDClassifier  # SGD classifier
 
+cwd = os.getcwd()
 
 
 def get_classifier(file_path, name = 'svm'):
@@ -84,10 +85,9 @@ def svm_classifier_persistence(vector, label, file_path):
 		print "From: svm_classifier_persistence()\n\tUnexpect Error: {}".format(e)
 
 
-# def svm_classifier_accuracy(vector, label, file_path):
 def svm_classifier_accuracy(file_path):
 	try:
-		presist_path = os.path.join(os.path.split(file_path)[0], 'accuracy.txt')
+		presist_path = os.path.join(cwd, 'text/accuracy.txt')
 		if os.path.exists(presist_path):
 			with open(presist_path) as fp:
 				report = fp.read()
@@ -102,8 +102,6 @@ def svm_classifier_accuracy(file_path):
 
 			sc = StandardScaler()
 			sc.fit(d_train)
-			# print sc.mean_
-			# print sc.scale_
 			d_train = sc.transform(d_train)
 			d_test = sc.transform(d_test)
 
@@ -127,48 +125,6 @@ def svm_classifier_accuracy(file_path):
 		print "From: svm_classifier()\n\tUnexpect Error: {}".format(e)
 
 
-def sgd_classifier(vector, label, file_path):
-	try:
-		directory = os.path.join(os.path.split(file_path)[0], 'classifier')
-		classifier_path = os.path.join(directory, 'sgd.pkl')
-
-		print "SGD Classifier:"
-		d_train, d_test, l_train, l_test = train_test_split(vector, label, test_size = 0.33, random_state=42)
-		# sc = StandardScaler()
-		# sc.fit(d_train)
-		# # print sc.mean_
-		# # print sc.scale_
-		# d_train = sc.transform(d_train)
-		# d_test = sc.transform(d_test)
-		clf = SGDClassifier(loss = 'log', penalty= 'l1', alpha = .0001, max_iter = 50)
-		clf_res = clf.fit(d_train, l_train)
-		# joblib.dump(clf, classifier_path)
-		print "Test Accuracy of SGD: %.2f"%clf_res.score(d_test, l_test)
-		sgd_predicted = clf_res.predict(d_test)
-		print sgd_predicted
-		cm = confusion_matrix(l_test, sgd_predicted)
-		print cm
-		print classification_report(l_test, sgd_predicted)
-		return clf_res
-	except Exception as e:
-		print "From: sgd_classifier()\n\tUnexpect Error: {}".format(e)
-
-
-
-
 if __name__ == '__main__':
-	# file_path = '/home/skipper/nltk_data/smsspamcollection/SMSSpamCollection'
-	# file_path = '/home/skipper/study/python/project/cmt_stit.txt'
-	file_path = '/home/skipper/study/python/project_v2/cmt_stit.txt'
-
-	# # vector, label = get_vec_label(file_path)
-	# print len(vector)
-	# print len(label)
-
-	# print svm_classifier_accuracy(file_path)
-	
-
-	# sgd_classifier(vector, label, file_path)
-	# clf_res = get_classifier(file_path)
-	# clf_res = get_classifier(file_path, name = 'sgd')
-	print svm_classifier_accuracy('/home/skipper/study/python/project_v2/text/test/all.txt')
+	file_path = os.path.join(cwd, 'text/cmt_stit.txt')
+	print svm_classifier_accuracy(file_path)
