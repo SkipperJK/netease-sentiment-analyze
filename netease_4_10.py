@@ -56,7 +56,7 @@ def crawl_news_class(page_urls):
 					# "time":"03/31/2018 15:14:01"
 					# convert it to datatime format
 					if sub_url['time'] != "":
-						raw_time = sub_url['time'].split() 
+						raw_time = sub_url['time'].split()
 						raw_time1 = raw_time[0].split('/')
 						raw_time2 = raw_time[1].split(':')
 						n_time = datetime(int(raw_time1[2]), int(raw_time1[0]), int(raw_time1[1]), \
@@ -64,10 +64,11 @@ def crawl_news_class(page_urls):
 					else:
 						time_state = 0
 						print sub_url['docurl']
-						print "Note --- No time value!"
+						print "Note --- No time value!--- Drop this news!"
+						continue
 					news = News_basic(sub_url['title'], sub_url['docurl'],\
 										 sub_url['commenturl'], n_id, n_time)    
-					pp = datetime(2018,1,1)  
+					pp = datetime(2018,1,1) 
 					if n_time < pp:
 						continue
 					if sub_url['docurl'].split('/')[2] == "war.163.com" or \
@@ -318,7 +319,7 @@ def crawl_new(n):
 
 
 def main():
-	url = "http://temp.163.com/special/00804KVA/"
+	url = "http://temp.163.com/special/00804KVA/"	# dynamic loading josn data of all news web invalid
 	print "From netease_4_10.py:"
 	print "Crawling page url......"
 	page_urls = crawl_page_url(url)
@@ -334,6 +335,7 @@ if __name__ == '__main__':
 	main()
 	# update_cmts()
 	# print "Update %d article"%n
+	# crawl_page_url('http://temp.163.com/special/00804KVA/')
 	pass
 
 

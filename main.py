@@ -218,7 +218,8 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 	
 if __name__ == '__main__':
 
-	date_start = '2018/4/25'
-	date_end = '2018/4/26'
-	main(date_start = date_start, date_end = date_end, show = 1)
+	main()
+	# date_start = '2018/4/25'
+	# date_end = '2018/4/26'
+	# main(date_start = date_start, date_end = date_end, show = 1)
 	pass

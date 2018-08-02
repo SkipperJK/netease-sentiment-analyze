@@ -1,0 +1,3 @@
+main.py	--- analyze process(only anaylze news for specified date range)
+netease_4_10.py --- crawl the news(only crawl news recently days)
+mongodb_io.py --- crawl news and preprocessed(tokenize,remove stopwords,pos clean) them
