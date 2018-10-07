@@ -12,6 +12,7 @@ from math import sqrt
 from pymongo import MongoClient
 from datetime import datetime
 
+
 if sys.getdefaultencoding() != 'utf-8':
 	reload(sys)
 	sys.setdefaultencoding('utf-8')
@@ -46,6 +47,17 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 		b = str(tag_time).split()[0].split('-')
 		b = [int(i) for i in b]
 		b = [str(i) for i in b]
+	# modify 9/19/2017
+	# add
+		date_start = '/'.join(i for i in b)
+		date_end = '/'.join([str(c_t[0]), str(c_t[1]), str(c_t[2])])
+		# print "-------"
+		# print "%s---%s"%(date_start, date_end)
+		d_st = tag_time
+		d_end = datetime(c_t[0], c_t[1], c_t[2], c_t[3], c_t[4], c_t[5])
+		# print d_st, d_end
+	# add done
+
 		if n_clusters == 0:
 			base_path = '_'.join(b)+'-'+'_'.join([str(c_t[0]), str(c_t[1]), str(c_t[2])])+'-orign'
 		else:
@@ -66,11 +78,28 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 		if saving == 1:
 			os.mkdir(path)
 
+	# changing
 		print "Loading data from the MongoDB......"
-		if date_start and date_end:
+		# if date_start and date_end:
+		# 	target = mgio.get_target_1(d_st, d_end)
+		# else:
+		# 	target = mgio.get_target(tag_time)
+		target = mgio.get_target_1(d_st, d_end)
+	# changed
+
+	# modify 9/19/2017
+	# Maybe the mongodb no news during specified time period
+	# add
+		if not target.count():
+			print "Oh Oh Oh   No news between %s and %s"%(d_st, d_end)
+			print "Crawling the news form the website..."
+			# crawl.main()
+			mgio.main()
 			target = mgio.get_target_1(d_st, d_end)
-		else:
-			target = mgio.get_target(tag_time)
+		# return
+	# From the first execute when every test, so using jupyter, but you need recreate jupyter file
+	# add done
+
 
 		data = prep.convert_to_dataframe(target)
 		cnt = len(data)
@@ -218,8 +247,8 @@ def main(date_start = None, date_end = None, n_clusters = 0, days = 5, saving = 
 	
 if __name__ == '__main__':
 
-	main()
-	# date_start = '2018/4/25'
-	# date_end = '2018/4/26'
-	# main(date_start = date_start, date_end = date_end, show = 1)
-	pass
+	# main()
+	date_start = '2018/4/25'
+	date_end = '2018/4/26'
+	main(date_start = date_start, date_end = date_end, show = 1)
+	# pass
