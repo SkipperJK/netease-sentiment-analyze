@@ -1,2 +1,4 @@
 # pyc file 
 *.pyc
+*.sublime-project
+*.sublime-workspace

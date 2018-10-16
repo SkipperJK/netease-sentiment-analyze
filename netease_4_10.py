@@ -333,7 +333,7 @@ def main():
 
 if __name__ == '__main__':
 	main()
-	# update_cmts()
+	# update_cmts(300)
 	# print "Update %d article"%n
 	# crawl_page_url('http://temp.163.com/special/00804KVA/')
 	pass

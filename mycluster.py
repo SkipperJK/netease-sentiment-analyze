@@ -106,7 +106,15 @@ def get_class_keywords(n_clusters, count,  sub_cluster, sub_weight):
 			sub_tf_matrix, sub_words = get_tf_matrix(sub_cluster[i])
 			m = sub_tf_matrix.toarray()						# m is two dimension	
 			# get the keywords frequency of articles in the same cluster
-			tf_sum = np.sum(m, axis = 0)												# get trem frequency
+			# tf_sum = np.sum(m, axis = 0)
+			tf_sum = sum(m, axis = 0)
+			print "TTTTTTTTT--------------------------TTTTTTT"
+			# /usr/local/lib/python2.7/dist-packages/gensim/models/ldamodel.py:826: DeprecationWarning: Calling np.sum(generator) is deprecated, and in the future will give a different result. Use np.sum(np.from_iter(generator)) or the python sum builtin instead.	
+			# NOTE
+
+
+
+															# get trem frequency
 			for wtf in range(len(tf_sum)):
 				tf_m_weight.append(tf_sum[wtf] * sub_weight[i][sub_words[wtf]])
 			tf_m_weight = np.array(tf_m_weight)										# get tf * weight
